@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deneme Sayacı</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --secondary: #475569;
+            --secondary-hover: #334155;
+            --accent: #10b981;
+        }
+
+        /* Tema Seçenekleri */
+        /* 2. Tema: Dolmuş Kronometresi (Retro Kırmızı LED) */
+        :root[data-theme="retro"] {
+            --bg-color: #050505;
+            --card-bg: #111111;
+            --text-main: #ff1111;
+            --text-muted: #550000;
+            --primary: #ff1111;
+            --primary-hover: #cc0000;
+            --danger: #ff5555;
+            --danger-hover: #cc4444;
+            --secondary: #331111;
+            --secondary-hover: #441111;
+            --accent: #ff1111;
+        }
+        
+        /* 3. Tema: Çalar Saat (Klasik Yeşil Dijital) */
+        :root[data-theme="alarm"] {
+            --bg-color: #222222;
+            --card-bg: #333333;
+            --text-main: #00ff00;
+            --text-muted: #006600;
+            --primary: #00ff00;
+            --primary-hover: #00cc00;
+            --danger: #ff3333;
+            --danger-hover: #cc0000;
+            --secondary: #555555;
+            --secondary-hover: #444444;
+            --accent: #00ff00;
+        }
+        
+        /* 4. Tema: Okyanus (Derin Mavi) */
+        :root[data-theme="ocean"] {
+            --bg-color: #0c4a6e;
+            --card-bg: #0369a1;
+            --text-main: #e0f2fe;
+            --text-muted: #bae6fd;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --danger: #f43f5e;
+            --danger-hover: #e11d48;
+            --secondary: #075985;
+            --secondary-hover: #0c4a6e;
+            --accent: #2dd4bf;
+        }
+        
+        /* 5. Tema: Doğa (Orman Yeşili) */
+        :root[data-theme="nature"] {
+            --bg-color: #14532d;
+            --card-bg: #166534;
+            --text-main: #dcfce7;
+            --text-muted: #bbf7d0;
+            --primary: #4ade80;
+            --primary-hover: #22c55e;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --secondary: #15803d;
+            --secondary-hover: #166534;
+            --accent: #a3e635;
+        }
+        
+        /* 6. Tema: Hacker (Matrix Terminal) */
+        :root[data-theme="hacker"] {
+            --bg-color: #000000;
+            --card-bg: #050505;
+            --text-main: #00ff41;
+            --text-muted: #008f11;
+            --primary: #00ff41;
+            --primary-hover: #008f11;
+            --danger: #ff003c;
+            --danger-hover: #c9002a;
+            --secondary: #003b00;
+            --secondary-hover: #001a00;
+            --accent: #00ff41;
+        }
+        
+        /* 7. Tema: Gün Batımı (Sıcak Renkler) */
+        :root[data-theme="sunset"] {
+            --bg-color: #4c1d95;
+            --card-bg: #7c3aed;
+            --text-main: #fde047;
+            --text-muted: #fef08a;
+            --primary: #f97316;
+            --primary-hover: #ea580c;
+            --danger: #e11d48;
+            --danger-hover: #be123c;
+            --secondary: #5b21b6;
+            --secondary-hover: #4c1d95;
+            --accent: #f43f5e;
+        }
+        
+        /* 8. Tema: Siberpunk (Neon) */
+        :root[data-theme="cyberpunk"] {
+            --bg-color: #0f0f13;
+            --card-bg: #1c1c24;
+            --text-main: #0ff;
+            --text-muted: #b300ff;
+            --primary: #f0f;
+            --primary-hover: #d0d;
+            --danger: #ff0055;
+            --danger-hover: #dd0044;
+            --secondary: #2b2b36;
+            --secondary-hover: #3c3c4a;
+            --accent: #0ff;
+        }
+
+        /* Odaklanma Modu (Focus Mode) */
+        body.focus-mode .top-bar,
+        body.focus-mode h1,
+        body.focus-mode .tabs,
+        body.focus-mode #setupArea,
+        body.focus-mode #pomodoroArea,
+        body.focus-mode .controls,
+        body.focus-mode #todoArea,
+        body.focus-mode #statsArea {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        body.focus-mode .container {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            margin: auto;
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 95vw;
+            max-width: 1400px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        h1 {
+            font-size: clamp(24px, 3vw, 40px);
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            transition: all 0.5s ease;
+        }
+        
+        select {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            border: 1px solid var(--secondary);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            transition: all 0.5s ease;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--text-muted);
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        #setupArea {
+            margin-bottom: 20px;
+            transition: opacity 0.3s;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        input[type="number"] {
+            background-color: var(--bg-color);
+            border: 1px solid var(--secondary);
+            color: var(--text-main);
+            padding: 15px 10px;
+            border-radius: 8px;
+            font-size: 24px;
+            width: 120px;
+            text-align: center;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary);
+        }
+
+        #pomodoroArea {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        #pomoStatusText {
+            color: var(--primary);
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+
+        .display {
+            font-size: clamp(80px, 18vw, 280px);
+            font-weight: 300;
+            font-variant-numeric: tabular-nums; /* Rakamların sabit genişlikte olmasını sağlar */
+            margin: 20px 0 40px 0;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Temalara Göre Ekran Şekillendirmesi */
+        :root[data-theme="retro"] .display {
+            font-family: 'Courier New', Courier, monospace;
+            background: #000;
+            padding: 20px 40px;
+            border: 4px solid #333;
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(255,0,0,0.1);
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+        }
+        :root[data-theme="alarm"] .display {
+            font-family: 'Consolas', monospace;
+            background: #111;
+            padding: 20px 40px;
+            border: 5px solid #555;
+            border-radius: 10px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        :root[data-theme="ocean"] .display {
+            font-family: 'Trebuchet MS', sans-serif;
+            color: #e0f2fe;
+            text-shadow: 0 0 20px #38bdf8;
+        }
+        :root[data-theme="nature"] .display {
+            font-family: 'Georgia', serif;
+            color: #dcfce7;
+            text-shadow: 0 0 15px #4ade80;
+        }
+        :root[data-theme="hacker"] .display {
+            font-family: 'Courier New', Courier, monospace;
+            background: #000;
+            color: #00ff41;
+            border: 2px solid #00ff41;
+            padding: 20px 40px;
+            box-shadow: 0 0 10px #00ff41;
+            border-radius: 0;
+        }
+        :root[data-theme="sunset"] .display {
+            font-family: 'Arial', sans-serif;
+            color: #fde047;
+            text-shadow: 2px 2px 10px #f97316;
+        }
+        :root[data-theme="cyberpunk"] .display {
+            font-family: 'Impact', sans-serif;
+            background: #000;
+            color: #0ff;
+            border: 3px solid #f0f;
+            box-shadow: 4px 4px 0px #f0f, -4px -4px 0px #0ff;
+            border-radius: 5px;
+            padding: 20px 40px;
+            text-transform: uppercase;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            transition: all 0.5s ease;
+        }
+
+        .btn {
+            border: none;
+            padding: 15px 35px;
+            border-radius: 10px;
+            font-size: clamp(16px, 1.5vw, 24px);
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-start { background-color: var(--accent); }
+        .btn-start:hover { background-color: #059669; }
+        
+        .btn-pause { background-color: var(--danger); }
+        .btn-pause:hover { background-color: var(--danger-hover); }
+        
+        .btn-reset { background-color: var(--secondary); }
+        .btn-reset:hover { background-color: var(--secondary-hover); }
+
+        .btn-pip { background-color: #8b5cf6; }
+        .btn-pip:hover { background-color: #7c3aed; }
+
+        /* Yapılacaklar Listesi */
+        #todoArea {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--secondary);
+            text-align: left;
+            transition: all 0.5s ease;
+        }
+        #todoArea h3 {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .todo-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #todoInput {
+            flex: 1;
+            background-color: var(--bg-color);
+            border: 1px solid var(--secondary);
+            color: var(--text-main);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+        #todoInput:focus {
+            border-color: var(--primary);
+        }
+        .btn-add { background-color: var(--primary); padding: 12px 20px; font-size: 16px; }
+        .btn-add:hover { background-color: var(--primary-hover); }
+        #todoList {
+            list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto;
+        }
+        .todo-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background-color: var(--bg-color); padding: 12px 15px; margin-bottom: 8px;
+            border-radius: 8px; border-left: 4px solid var(--secondary); transition: all 0.2s;
+            cursor: grab;
+        }
+        .todo-item:active { cursor: grabbing; }
+        .todo-item.completed { border-left-color: var(--accent); opacity: 0.6; }
+        .todo-item.dragging { opacity: 0.4; border: 2px dashed var(--primary); background-color: var(--card-bg); }
+        .todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-muted); }
+        .todo-text { flex: 1; cursor: pointer; font-size: 16px; user-select: none; }
+        .btn-delete {
+            background: transparent; color: var(--danger); border: none; cursor: pointer;
+            font-size: 18px; padding: 0 5px; transition: transform 0.2s;
+        }
+        .btn-delete:hover { color: var(--danger-hover); transform: scale(1.2); }
+        
+        /* Scrollbar düzenlemesi */
+        #todoList::-webkit-scrollbar { width: 6px; }
+        #todoList::-webkit-scrollbar-track { background: var(--bg-color); border-radius: 8px; }
+        #todoList::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 8px; }
+        #todoList::-webkit-scrollbar-thumb:hover { background: var(--secondary-hover); }
+
+        /* İstatistik Sistemi */
+        #statsArea {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--secondary);
+            transition: all 0.5s ease;
+        }
+        #statsArea h3 {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .stat-box {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--bg-color);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .stat-item p { font-size: 14px; color: var(--text-muted); margin-bottom: 5px; }
+        .stat-item h4 { font-size: 22px; color: var(--primary); font-weight: bold; }
+        .level-badge {
+            background-color: var(--accent);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <select id="themeSelector" onchange="changeTheme(this.value)">
+            <option value="classic">⏱️ Klasik Tema</option>
+            <option value="retro">🚌 Retro Kırmızı Kronometre</option>
+            <option value="alarm">⏰ Yeşil Dijital Saat</option>
+            <option value="ocean">🌊 Okyanus Teması</option>
+            <option value="nature">🌿 Doğa Teması</option>
+            <option value="hacker">💻 Hacker (Terminal)</option>
+            <option value="sunset">🌅 Gün Batımı</option>
+            <option value="cyberpunk">🌃 Siberpunk (Neon)</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <h1>Deneme Sayacı</h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" id="tabCountdown" onclick="setMode('countdown')">Geri Sayım</button>
+            <button class="tab-btn" id="tabStopwatch" onclick="setMode('stopwatch')">Kronometre</button>
+            <button class="tab-btn" id="tabPomodoro" onclick="setMode('pomodoro')">Odaklanma</button>
+        </div>
+
+        <div id="setupArea">
+            <input type="number" id="hoursInput" placeholder="Saat" min="0">
+            <input type="number" id="minutesInput" placeholder="Dak." min="0" max="59">
+            <input type="number" id="secondsInput" placeholder="Sn." min="0" max="59">
+        </div>
+        
+        <div id="pomodoroArea" class="hidden">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                <select id="pomoPreset" onchange="resetTimer()">
+                    <option value="20,5">1. Seçenek (20dk Ders / 5dk Mola)</option>
+                    <option value="60,10">2. Seçenek (1 Saat Ders / 10dk Mola)</option>
+                    <option value="120,20">3. Seçenek (2 Saat Ders / 20dk Mola)</option>
+                </select>
+                <select id="bgSoundSelector">
+                    <option value="none">Arka Plan Sesi: Yok</option>
+                    <option value="rain">Arka Plan Sesi: Yağmur 🌧️</option>
+                    <option value="fire">Arka Plan Sesi: Şömine 🔥</option>
+                </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="volumeSlider" style="color: var(--text-muted); font-size: 14px;">Arka Plan Sesi Seviyesi:</label>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.2" oninput="changeVolume(this.value)" style="width: 150px; cursor: pointer;">
+            </div>
+            <h3 id="pomoStatusText">Ders Zamanı</h3>
+        </div>
+
+        <div class="display" id="timeDisplay">00:00:00</div>
+
+        <div class="controls">
+            <button class="btn btn-start" onclick="startTimer()">Başla</button>
+            <button class="btn btn-pause" onclick="pauseTimer()">Duraklat</button>
+            <button class="btn btn-reset" onclick="resetTimer()">Sıfırla</button>
+            <button class="btn btn-pip" id="pipButton" onclick="togglePiP()" style="display: none;">Mini Ekran</button>
+        </div>
+
+        <div id="todoArea">
+            <h3>Yapılacaklar Listesi</h3>
+            <div class="todo-input-group">
+                <input type="text" id="todoInput" placeholder="Yeni görev ekle...">
+                <button class="btn btn-add" onclick="addTodo()">Ekle</button>
+            </div>
+            <ul id="todoList"></ul>
+        </div>
+
+        <div id="statsArea">
+            <h3>İstatistik & Seviye</h3>
+            <div class="level-badge" id="levelBadge">🌱 Çaylak</div>
+            <div class="stat-box">
+                <div class="stat-item">
+                    <p>Bugün Çalışılan</p>
+                    <h4 id="dailyTimeTxt">0 dk</h4>
+                </div>
+                <div class="stat-item">
+                    <p>Toplam Süre</p>
+                    <h4 id="totalTimeTxt">0 dk</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mini Ekran (Picture-in-Picture) için gizli elementler -->
+    <canvas id="pipCanvas" width="400" height="150" style="display: none;"></canvas>
+    <video id="pipVideo" style="display: none;" muted playsinline></video>
+
+    <script>
+        let mode = 'countdown'; // 'countdown', 'stopwatch' veya 'pomodoro'
+        let totalSeconds = 0;
+        let timerInterval = null;
+        let isRunning = false;
+        let isWorkSession = true; // Pomodoro için
+
+        const display = document.getElementById('timeDisplay');
+        const hoursInput = document.getElementById('hoursInput');
+        const minutesInput = document.getElementById('minutesInput');
+        const secondsInput = document.getElementById('secondsInput');
+        const setupArea = document.getElementById('setupArea');
+        const pomodoroArea = document.getElementById('pomodoroArea');
+        const tabCountdown = document.getElementById('tabCountdown');
+        const tabStopwatch = document.getElementById('tabStopwatch');
+        const tabPomodoro = document.getElementById('tabPomodoro');
+
+        const pipButton = document.getElementById('pipButton');
+        const pipCanvas = document.getElementById('pipCanvas');
+        const pipVideo = document.getElementById('pipVideo');
+        let pipCtx = null;
+        
+        let audioCtx;
+        let bgSoundSource;
+        let bgSoundFilter;
+        let bgGainNode;
+        let focusTimeout = null;
+        let titleBlinkInterval = null;
+
+        // Mini Ekran (PiP) desteği varsa butonu göster ve altyapıyı kur
+        if ('pictureInPictureEnabled' in document && document.pictureInPictureEnabled) {
+            pipButton.style.display = 'inline-block';
+            pipCtx = pipCanvas.getContext('2d');
+            pipVideo.srcObject = pipCanvas.captureStream();
+            pipVideo.play().catch(e => console.log("Video oynatılamadı, kullanıcı etkileşimi gerekebilir."));
+        } else {
+            console.log("Tarayıcı Picture-in-Picture API'sini desteklemiyor.");
+        }
+
+        function changeTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+        }
+
+        function playAlarm() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const audioCtx = new AudioContext();
+                
+                // 3 kere bip + 2 sn bekle + 3 kere bip (Toplam 6 döngü)
+                for (let i = 0; i < 6; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.value = 880; // Klasik dijital saat alarm frekansı
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    // İlk 3 atış normal (groupOffset = 0), Sonraki 3 atış 2 saniye rötarlı (groupOffset = 2)
+                    const groupOffset = Math.floor(i / 3) * 2;
+                    const beepOffset = (i % 3) * 0.3;
+                    
+                    const startTime = audioCtx.currentTime + groupOffset + beepOffset;
+                    gain.gain.setValueAtTime(1, startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.2);
+                    
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.25);
+                }
+            } catch (e) {
+                console.log("Tarayıcı ses API'sini desteklemiyor.");
+            }
+        }
+
+        function changeVolume(val) {
+            if (bgGainNode && bgGainNode.gain) {
+                bgGainNode.gain.setValueAtTime(val, audioCtx ? audioCtx.currentTime : 0);
+            }
+        }
+
+        // Arka Plan Sesi Üretici (Web Audio API kullanılarak internet gerektirmeden yapay ses üretilir)
+        function playBgSound(type) {
+            stopBgSound();
+            if (type === 'none') return;
+            
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                const bufferSize = audioCtx.sampleRate * 2;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = buffer.getChannelData(0);
+                
+                // Beyaz Gürültü (White Noise) Üretimi
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+                
+                bgSoundSource = audioCtx.createBufferSource();
+                bgSoundSource.buffer = buffer;
+                bgSoundSource.loop = true;
+                
+                bgSoundFilter = audioCtx.createBiquadFilter();
+                bgSoundFilter.type = 'lowpass';
+                
+                // Cızırtıyı ve bozuk sesi gidermek için frekanslar çok daha yumuşak hale getirildi
+                bgSoundFilter.frequency.value = (type === 'rain') ? 400 : 150; 
+                
+                bgGainNode = audioCtx.createGain();
+                const volumeSlider = document.getElementById('volumeSlider');
+                bgGainNode.gain.value = volumeSlider ? volumeSlider.value : 0.2; // Varsayılan kısık ses
+
+                bgSoundSource.connect(bgSoundFilter);
+                bgSoundFilter.connect(bgGainNode);
+                bgGainNode.connect(audioCtx.destination);
+                bgSoundSource.start(0);
+            } catch (e) {
+                console.log("Arka plan sesi başlatılamadı:", e);
+            }
+        }
+
+        function stopBgSound() {
+            if (bgSoundSource) {
+                bgSoundSource.stop();
+                bgSoundSource.disconnect();
+                bgSoundSource = null;
+            }
+        }
+
+        // Başlık Yanıp Sönme (Title Blink) Efekti
+        function startTitleBlink(message) {
+            stopTitleBlink();
+            let showMessage = true;
+            let blinkCount = 0;
+            
+            titleBlinkInterval = setInterval(() => {
+                document.title = showMessage ? message : "00:00:00 - Deneme Sayacı";
+                showMessage = !showMessage;
+                blinkCount++;
+                
+                // 10 saniye sonra otomatik dur (20 döngü)
+                if (blinkCount >= 20) stopTitleBlink(); 
+            }, 500);
+        }
+
+        function stopTitleBlink() {
+            if (titleBlinkInterval) {
+                clearInterval(titleBlinkInterval);
+                titleBlinkInterval = null;
+                updateDisplay(); // Normal başlığı geri getir
+            }
+        }
+
+        // Kullanıcı sekmeye geri döndüğünde yanıp sönmeyi durdur
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) stopTitleBlink();
+        });
+
+        // Odaklanma Modu Zamanlayıcısı
+        function resetFocusTimeout() {
+            document.body.classList.remove('focus-mode');
+            clearTimeout(focusTimeout);
+            if (isRunning) {
+                focusTimeout = setTimeout(() => {
+                    document.body.classList.add('focus-mode');
+                }, 3000); // 3 saniye hareketsizlikte her şeyi gizle
+            }
+        }
+        document.addEventListener('mousemove', resetFocusTimeout);
+        document.addEventListener('click', resetFocusTimeout);
+
+        function updateDisplay() {
+            const h = Math.floor(Math.abs(totalSeconds) / 3600);
+            const m = Math.floor((Math.abs(totalSeconds) % 3600) / 60);
+            const s = Math.abs(totalSeconds) % 60;
+
+            const formattedTime = 
+                (h > 0 ? String(h).padStart(2, '0') + ':' : '') + 
+                String(m).padStart(2, '0') + ':' + 
+                String(s).padStart(2, '0');
+                
+            display.innerText = formattedTime;
+            if (!titleBlinkInterval) {
+                document.title = (isRunning ? "⏳ " : "") + formattedTime + " - Deneme Sayacı";
+            }
+
+            // --- Mini Ekran (PiP) Canvas Güncellemesi ---
+            if (pipCtx) {
+                const computedStyle = getComputedStyle(document.body);
+                const textColor = getComputedStyle(display).color;
+                const bgColor = computedStyle.backgroundColor;
+
+                // Arka planı ayarla
+                pipCtx.fillStyle = bgColor;
+                pipCtx.fillRect(0, 0, pipCanvas.width, pipCanvas.height);
+
+                // Yazı stilini ayarla (PiP için sabit ve okunaklı boyut)
+                pipCtx.font = 'bold 72px Segoe UI, sans-serif';
+                pipCtx.fillStyle = textColor;
+                pipCtx.textAlign = 'center';
+                pipCtx.textBaseline = 'middle';
+
+                // Yazıyı çizdir
+                pipCtx.fillText(formattedTime, pipCanvas.width / 2, pipCanvas.height / 2 + 5); // Dikeyde ortalamak için hafif ayar
+            }
+        }
+
+        function setMode(newMode) {
+            if(isRunning) pauseTimer();
+            stopBgSound();
+            stopTitleBlink();
+            
+            mode = newMode;
+            totalSeconds = 0;
+            isWorkSession = true;
+            document.getElementById('pomoStatusText').innerText = "Ders Zamanı";
+            document.getElementById('pomoStatusText').style.color = "var(--primary)";
+            updateDisplay();
+
+            tabCountdown.classList.remove('active');
+            tabStopwatch.classList.remove('active');
+            tabPomodoro.classList.remove('active');
+            setupArea.classList.add('hidden');
+            pomodoroArea.classList.add('hidden');
+
+            if (mode === 'countdown') {
+                tabCountdown.classList.add('active');
+                setupArea.classList.remove('hidden');
+            } else if (mode === 'stopwatch') {
+                tabStopwatch.classList.add('active');
+            } else if (mode === 'pomodoro') {
+                tabPomodoro.classList.add('active');
+                pomodoroArea.classList.remove('hidden');
+                document.getElementById('pomoPreset').disabled = false;
+            }
+        }
+
+        function startTimer() {
+            if (isRunning) return;
+
+            // Tam ekran (Fullscreen) moduna geç
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch((err) => console.log("Tam ekran desteklenmiyor veya engellendi.", err));
+            }
+
+            // Geri sayım için ilk başlangıçta süreyi al
+            if (mode === 'countdown' && totalSeconds === 0) {
+                const h = parseInt(hoursInput.value) || 0;
+                const m = parseInt(minutesInput.value) || 0;
+                const s = parseInt(secondsInput.value) || 0;
+                totalSeconds = (h * 3600) + (m * 60) + s;
+                
+                if (totalSeconds <= 0) {
+                    alert("Lütfen geçerli bir süre giriniz!");
+                    return;
+                }
+                setupArea.classList.add('hidden'); // Süre girildikten sonra inputu gizle
+            } 
+            // Pomodoro için süreyi al
+            else if (mode === 'pomodoro' && totalSeconds === 0) {
+                const preset = document.getElementById('pomoPreset').value.split(',');
+                let mins = isWorkSession ? parseInt(preset[0]) : parseInt(preset[1]);
+                totalSeconds = mins * 60;
+                
+                if (isWorkSession) playBgSound(document.getElementById('bgSoundSelector').value);
+                document.getElementById('pomoPreset').disabled = true;
+            }
+
+            isRunning = true;
+            updateDisplay();
+            resetFocusTimeout(); // Başladığı an hareketsizlik sayacını başlat
+
+            timerInterval = setInterval(() => {
+                // İstatistik Takibi (Her saniye çalışılan süreyi kaydet)
+                let isStudying = (mode === 'countdown' || mode === 'stopwatch' || (mode === 'pomodoro' && isWorkSession));
+                if (isStudying) {
+                    studyStats.daily[todayStr] = (studyStats.daily[todayStr] || 0) + 1;
+                    studyStats.total = (studyStats.total || 0) + 1;
+                    if (studyStats.total % 10 === 0) saveStats(); // Her 10 saniyede bir LocalStorage'a kaydet
+                }
+
+                if (mode === 'countdown' || mode === 'pomodoro') {
+                    totalSeconds--;
+                    if (totalSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        totalSeconds = 0;
+                        updateDisplay();
+                        playAlarm();
+                        
+                        if (mode === 'pomodoro') {
+                            saveStats(); // Tur bitince verileri garanti kaydet
+                            isWorkSession = !isWorkSession; // Turu değiştir (Dersten molaya, moladan derse)
+                            
+                            document.getElementById('pomoStatusText').innerText = isWorkSession ? "Ders Zamanı" : "Mola Zamanı";
+                            document.getElementById('pomoStatusText').style.color = isWorkSession ? "var(--primary)" : "var(--accent)";
+                            
+                            // Başlıkta yanıp sönme başlat
+                            startTitleBlink(isWorkSession ? "📚 DERSE DÖN! 📚" : "☕ MOLA VAKTİ! ☕");
+                            
+                            // Yeni oturum için süreyi kur ve OTOMATİK başlat
+                            const preset = document.getElementById('pomoPreset').value.split(',');
+                            let mins = isWorkSession ? parseInt(preset[0]) : parseInt(preset[1]);
+                            totalSeconds = mins * 60;
+                            isRunning = true; 
+                            
+                            // Sesi duruma göre ayarla
+                            if (isWorkSession) playBgSound(document.getElementById('bgSoundSelector').value);
+                            else stopBgSound();
+                            resetFocusTimeout();
+                        } else {
+                            startTitleBlink("⚠️ SÜRE BİTTİ! ⚠️");
+                            stopBgSound();
+                            setTimeout(() => {
+                                alert("SÜRE BİTTİ! Kalemleri bırakma vakti.");
+                            }, 3000); // Tüm alarm seslerinin çalması için alert'i 3 saniye geciktiriyoruz
+                            setupArea.classList.remove('hidden');
+                            document.body.classList.remove('focus-mode');
+                            clearTimeout(focusTimeout);
+                        }
+                    }
+                } else {
+                    // Kronometre
+                    totalSeconds++;
+                }
+                updateDisplay();
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (!isRunning) return;
+            clearInterval(timerInterval);
+            isRunning = false;
+            stopBgSound();
+            stopTitleBlink();
+            updateDisplay();
+            document.body.classList.remove('focus-mode');
+            clearTimeout(focusTimeout);
+            saveStats(); // Duraklatılınca son istatistikleri kaydet
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            totalSeconds = 0;
+            isWorkSession = true;
+            stopTitleBlink();
+            updateDisplay();
+            document.body.classList.remove('focus-mode');
+            clearTimeout(focusTimeout);
+            
+            // Tam ekrandan çıkma
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(err => console.log("Tam ekrandan çıkılamadı.", err));
+            }
+
+            if (mode === 'countdown') {
+                setupArea.classList.remove('hidden'); // Geri sayım sıfırlandığında inputu geri getir
+            } else if (mode === 'pomodoro') {
+                document.getElementById('pomoStatusText').innerText = "Ders Zamanı";
+                document.getElementById('pomoStatusText').style.color = "var(--primary)";
+                document.getElementById('pomoPreset').disabled = false;
+            }
+        }
+
+        function togglePiP() {
+            if (!pipVideo.srcObject) return;
+
+            if (!document.pictureInPictureElement) {
+                pipVideo.requestPictureInPicture()
+                    .catch(error => console.error("Mini Ekran başlatılamadı:", error));
+            } else {
+                document.exitPictureInPicture()
+                    .catch(error => console.error("Mini Ekran kapatılamadı:", error));
+            }
+        }
+
+        // İlk açılışta ekranı güncelle
+        updateDisplay();
+
+        // --- YAPILACAKLAR LİSTESİ (TO-DO) KODLARI ---
+        const todoInput = document.getElementById('todoInput');
+        const todoList = document.getElementById('todoList');
+
+        todoInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        // Sayfa yüklendiğinde Local Storage'dan verileri çek
+        let todos = JSON.parse(localStorage.getItem('sayacTodos')) || [];
+
+        function saveTodos() {
+            localStorage.setItem('sayacTodos', JSON.stringify(todos));
+        }
+
+        function renderTodos() {
+            todoList.innerHTML = '';
+            todos.forEach((todo, index) => {
+                const li = document.createElement('li');
+                li.className = 'todo-item';
+                li.draggable = true;
+                li.dataset.index = index;
+                if (todo.completed) li.classList.add('completed');
+
+                const span = document.createElement('span');
+                span.className = 'todo-text';
+                span.innerText = todo.text;
+                span.onclick = () => {
+                    todo.completed = !todo.completed;
+                    saveTodos(); // Durumu kaydet
+                    li.classList.toggle('completed');
+                };
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'btn-delete';
+                delBtn.innerHTML = '✖';
+                delBtn.onclick = () => {
+                    todos.splice(index, 1);
+                    saveTodos(); // Silindikten sonra kaydet
+                    renderTodos(); // Listeyi yenile
+                };
+
+                // Sürükle Bırak (Drag & Drop) Olayları
+                li.addEventListener('dragstart', () => {
+                    li.classList.add('dragging');
+                });
+                
+                li.addEventListener('dragend', () => {
+                    li.classList.remove('dragging');
+                    updateTodosOrder();
+                });
+
+                li.appendChild(span);
+                li.appendChild(delBtn);
+                todoList.appendChild(li);
+            });
+        }
+
+        // Liste içi sürükleme alanını kontrol etme
+        todoList.addEventListener('dragover', e => {
+            e.preventDefault();
+            const draggingItem = document.querySelector('.dragging');
+            if (!draggingItem) return;
+            
+            const siblings = [...todoList.querySelectorAll('.todo-item:not(.dragging)')];
+            const nextSibling = siblings.find(sibling => {
+                return e.clientY <= sibling.getBoundingClientRect().top + sibling.offsetHeight / 2;
+            });
+            
+            if (nextSibling) {
+                todoList.insertBefore(draggingItem, nextSibling);
+            } else {
+                todoList.appendChild(draggingItem);
+            }
+        });
+
+        function updateTodosOrder() {
+            const newTodos = [];
+            todoList.querySelectorAll('.todo-item').forEach(item => {
+                const oldIndex = item.dataset.index;
+                newTodos.push(todos[oldIndex]);
+            });
+            todos = newTodos;
+            saveTodos();
+            renderTodos();
+        }
+
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (text === '') return;
+
+            todos.push({ text: text, completed: false });
+            saveTodos();
+            renderTodos();
+
+            todoInput.value = '';
+        }
+
+        // İlk yüklemede kayıtlı görevleri ekrana çizdir
+        renderTodos();
+
+        // --- İSTATİSTİK VE SEVİYE KODLARI ---
+        let todayStr = new Date().toLocaleDateString('tr-TR');
+        let studyStats = JSON.parse(localStorage.getItem('sayacStats')) || { daily: {}, total: 0 };
+        if (!studyStats.daily) studyStats.daily = {};
+        if (!studyStats.daily[todayStr]) studyStats.daily[todayStr] = 0;
+
+        function saveStats() {
+            localStorage.setItem('sayacStats', JSON.stringify(studyStats));
+            updateStatsUI();
+        }
+
+        function formatStatTime(sec) {
+            let h = Math.floor(sec / 3600);
+            let m = Math.floor((sec % 3600) / 60);
+            if (h > 0) return `${h} sa ${m} dk`;
+            return `${m} dk`;
+        }
+
+        function updateStatsUI() {
+            let todaySec = studyStats.daily[todayStr] || 0;
+            let totalSec = studyStats.total || 0;
+
+            document.getElementById('dailyTimeTxt').innerText = formatStatTime(todaySec);
+            document.getElementById('totalTimeTxt').innerText = formatStatTime(totalSec);
+
+            let level = "🌱 Çaylak"; let color = "var(--secondary)";
+            if (totalSec >= 180000) { level = "🧠 Einstein"; color = "#9333ea"; }
+            else if (totalSec >= 36000) { level = "🧙‍♂️ Profesör"; color = "var(--danger)"; }
+            else if (totalSec >= 18000) { level = "🎓 Uzman"; color = "var(--primary)"; }
+            else if (totalSec >= 3600) { level = "📚 Öğrenci"; color = "var(--accent)"; }
+
+            document.getElementById('levelBadge').innerText = level;
+            document.getElementById('levelBadge').style.backgroundColor = color;
+        }
+        
+        // İlk yüklemede istatistikleri ekrana çiz
+        updateStatsUI();
+    </script>
+</body>
+</html>
